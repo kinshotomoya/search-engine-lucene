@@ -6,7 +6,6 @@ import org.apache.lucene.search.{IndexSearcher, Query, TopDocs}
 import org.apache.lucene.store.ByteBuffersDirectory
 
 // in memoryなindexを作成する
-
 object Main extends App {
   def runMain(args: List[String]): Unit = {
     // analyzer
@@ -17,7 +16,7 @@ object Main extends App {
     // TODO:
     //  kuromoji入れる
     //  カスタムFilter入れる（不要ワードを取り除くなど）
-    //  synonym辞書はどう追加する？
+    //  カスタム辞書周りはどう追加する？（synonym,ngword等）
     val analyzer = new StandardAnalyzer
 
     // heapにindexを格納するためのバッファ
