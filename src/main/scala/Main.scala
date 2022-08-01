@@ -1,4 +1,4 @@
-import org.apache.lucene.analysis.standard.StandardAnalyzer
+import org.apache.lucene.analysis.ja.JapaneseAnalyzer
 import org.apache.lucene.document.{Document, Field, StringField, TextField}
 import org.apache.lucene.index.{DirectoryReader, IndexWriter, IndexWriterConfig}
 import org.apache.lucene.queryparser.classic.QueryParser
@@ -17,7 +17,10 @@ object Main extends App {
     //  kuromoji入れる
     //  カスタムFilter入れる（不要ワードを取り除くなど）
     //  カスタム辞書周りはどう追加する？（synonym,ngword等）
-    val analyzer = new StandardAnalyzer
+
+    val analyzer = new JapaneseAnalyzer()
+
+//    val analyzer = new StandardAnalyzer
 
     // heapにindexを格納するためのバッファ
     val index = new ByteBuffersDirectory
