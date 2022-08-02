@@ -16,7 +16,7 @@ object Main extends App {
     // TODO:
     //  kuromoji入れる
     //  カスタムFilter入れる（不要ワードを取り除くなど）
-    //  カスタム辞書周りはどう追加する？（synonym,ngword等）
+    //  カスタム辞書周りはどう追加する？（synonym,ngword,stopword等）
 
     val analyzer = new JapaneseAnalyzer()
 
@@ -40,6 +40,13 @@ object Main extends App {
     writer.close()
 
 
+
+    // TODO: documentが格納されているindexを読み込むにはどうする？
+    //  登録するデータを格納したファイル（hoge.txt）からindexを作成するのはどうする？
+    //  実際にsuggest-apiでは、検索ログからデータを作成してs3にデータを置いておく
+    //  そのs3にあるデータをindexに登録する
+//    DirectoryReader.open(Directory)
+
     // 検索クエリを作成する
     // 検索クエリに対してanalyzeするのに、analyzerの指定が必要
     val queryParser = new QueryParser("title", analyzer)
@@ -47,8 +54,8 @@ object Main extends App {
     val query: Query = queryParser.parse(queryKeyword)
     println(query)
 
-
     // 実際に検索する
+    // TODO: prefix searchはどうやって実現する？
     val reader: DirectoryReader = DirectoryReader.open(index)
     // indexにが変更しない場合はこのsearcherを使い回す（パフォーマンスの観点から）
     val searcher = new IndexSearcher(reader)
