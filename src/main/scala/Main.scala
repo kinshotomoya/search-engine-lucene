@@ -37,8 +37,10 @@ object Main extends App {
     addDoc(writer, "The Art of Computer Science", "9900333X")
 
     // TODO: どのようにindexが構成されているかみる（tokenizerで文字がどのように分割されているのか・データ構造）
+    // => lukeを使えばGUI上でindex内容が見れるっぽい
+    // lucene8.3からluceneの一部になっている
+    //
     writer.close()
-
 
 
     // TODO: documentが格納されているindexを読み込むにはどうする？
@@ -56,6 +58,8 @@ object Main extends App {
 
     // 実際に検索する
     // TODO: prefix searchはどうやって実現する？
+    // 参考：autocompleteの例。luceneのモジュールにAnalyzingSuggesterというsuggestを良しなにやってくれるモジュールがある！？
+    // https://medium.com/@ekaterinamihailova/in-memory-search-and-autocomplete-with-lucene-8-5-f2df1bc71c36
     val reader: DirectoryReader = DirectoryReader.open(index)
     // indexにが変更しない場合はこのsearcherを使い回す（パフォーマンスの観点から）
     val searcher = new IndexSearcher(reader)
