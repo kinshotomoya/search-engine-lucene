@@ -9,15 +9,13 @@ import java.io.{InputStreamReader, StringReader}
 object Tokenizer extends App {
 
   // ↓user辞書などkuromoji内で利用するものを設定できる
-  // JapaneseTokenizerFactory経由でtokenizerを作成すると、userDicを指定できないので使わない
-
   // 参考：https://kazuhira-r.hatenablog.com/entry/20130616/1371390716
   val userDictionary = UserDictionary.open(new InputStreamReader(this.getClass.getResourceAsStream("user-dictionary.txt")))
   // punctuation = true => 句読点を除く
-  val jaTokenizer = new JapaneseTokenizer(userDictionary, true, Mode.NORMAL)
+  val jaTokenizer: JapaneseTokenizer = new JapaneseTokenizer(userDictionary, true, Mode.NORMAL)
 
   // 解析文字列をtokenizerにset
-  val text = "ゴールドジムは様々なマシンが置いてあり、筋肉トレーニングには最適な場所だ。"
+  val text = "看護師"
   val reader = new StringReader(text)
   jaTokenizer.setReader(reader)
   jaTokenizer.reset()

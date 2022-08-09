@@ -42,6 +42,13 @@ object IndexFromFile extends App {
 
   // TODO: query作成。custom analyzer指定
   //  analyzerSuggest使用（suggest機能として使えるのか試してみる）
+  // ユーザーからのクエリ処理流れ
+  // 1. 入力クエリをtokenizeする
+  // 2. tokenFilterで
+//  val analyzer = CustomAnalyzer.builder().build()
+
+//  val parser = new QueryParser("reading", )
+
 
   private def addDoc(writer: IndexWriter, text: String, reading: String): Unit = {
     val document = new Document()
@@ -50,6 +57,11 @@ object IndexFromFile extends App {
     document.add(new StringField("text", text, Field.Store.YES))
     // StringFieldはindex時にtokenizeされない
     document.add(new StringField("reading", reading, Field.Store.YES))
+
+    // NOTE:
+    // multi fieldがデフォルトでonになっているので、複数の値を同じフィールドに格納したい場合は
+    // 同じフィールド名でそれぞれの値を登録しておけば良いらしい
+    // 参考：https://kazuhira-r.hatenablog.com/entry/20140412/1397319047
 
     writer.addDocument(document)
   }
