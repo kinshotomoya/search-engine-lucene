@@ -14,8 +14,8 @@ import java.util
 
 // 手順
 // 1. カタカナ変換する
-// 2. ↑をさらにローマ字変換する（長音符変換、shu・syu対応）
-// なので2回にわたってanalyzerで処理する必要がある（何故なら一気にローマ字読みまで処置すると、カタカナに対してcharFilterを適応するなどできないから）
+// 2. ↑をさらにローマ字変換する（長音符変換(tokyo -> toukyou, スキー -> sukiｰ)、shu・syu対応）
+// なので2回にわたってanalyzerで処理する必要がある（何故なら一気にローマ字読みまで処置すると、カタカナに対してcharFilterを適応するなどできないから（2.に記載しているshu, syu対応など））
 // 参考：https://qiita.com/navitime_tech/items/613c25967284c9452b73#%E3%83%AD%E3%83%BC%E3%83%9E%E5%AD%97%E5%85%A5%E5%8A%9B%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8B%E8%AA%B2%E9%A1%8C
 object IndexAnalyzer extends App {
 
@@ -34,14 +34,6 @@ object IndexAnalyzer extends App {
   // 半角仮名を全角仮名変換などノーマライズしている
   customAnalyzerBuilder.addCharFilter(ICUNormalizer2CharFilterFactory.NAME)
 
-  // tokenFilterの設定
-  // 形態素解析後の単語に「ひらがな -> カタカナ」変換する
-  // indexデータ作成時にはいらん
-  // search analyzerで使う（きゃぷてん -> キャプテン　問題のため）
-//  val hiraganaMap = new util.HashMap[String, String]()
-//  hiraganaMap.put("id", "Hiragana-Katakana")
-//  customAnalyzerBuilder.addTokenFilter(classOf[ICUTransformFilterFactory], hiraganaMap)
-
   // partOFSpeechStopFilterの設定
   // stoptags.txtに指定している
   val partOfSpeechStopMap = new util.HashMap[String, String]()
@@ -57,7 +49,7 @@ object IndexAnalyzer extends App {
   // JapaneseReadingFormFilterの設定
   // romaji読みを取得
   val readingFormMap = new util.HashMap[String, String]()
-//  readingFormMap.put("useRomaji", "true")
+  readingFormMap.put("useRomaji", "true")
   customAnalyzerBuilder.addTokenFilter(classOf[JapaneseReadingFormFilterFactory], readingFormMap)
 
   // Q: 0
@@ -112,7 +104,7 @@ object IndexAnalyzer extends App {
   val customAnalyzer: CustomAnalyzer = customAnalyzerBuilder.build()
 
   // requestLogからのinput
-  val inputKeyword = "すきー"
+  val inputKeyword = "スキー"
   val tokenStream: TokenStream = customAnalyzer.tokenStream("", inputKeyword)
   tokenStream.reset()
   while (tokenStream.incrementToken()) {
@@ -128,17 +120,7 @@ object IndexAnalyzer extends App {
   //    "reading_1": ["仕事", "shigoto", "sigoto"],
   //  }
 
-  // TODO:
-  // 検索は以下のように行う
-  // input keyword = 看護
-//  reading_0: 看護
-//  or
-//  reading_0: kango
-
-  // NOTE:
-  // reading_0とreading_1はand検索を行う
-
   // 参考
-//  https://techblog.zozo.com/entry/solr-suggester
-// https://qiita.com/navitime_tech/items/613c25967284c9452b73
+  //  https://techblog.zozo.com/entry/solr-suggester
+  // https://qiita.com/navitime_tech/items/613c25967284c9452b73
 }
