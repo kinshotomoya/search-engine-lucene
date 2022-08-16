@@ -22,6 +22,9 @@ object IndexFromFile extends App {
   val locationIndex: MMapDirectory = new MMapDirectory(locationIndexFilePath)
 
 
+//  val analyzer = IndexAnalyzer.customAnalyzer
+//  println(analyzer)
+
   // データ作成時点でtokenizeなど済ましているので、特にanalyzerは設定しない
   val writerConfig: IndexWriterConfig = new IndexWriterConfig()
   val writer: IndexWriter = new IndexWriter(keywordIndex, writerConfig)

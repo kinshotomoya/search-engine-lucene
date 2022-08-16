@@ -43,7 +43,6 @@ object Main extends App {
     writer.close()
 
 
-
     // TODO: documentが格納されているindexを読み込むにはどうする？
     //  登録するデータを格納したファイル（hoge.txt）からindexを作成するのはどうする？
     //  実際にsuggest-apiでは、検索ログからデータを作成してs3にデータを置いておく

@@ -5,6 +5,7 @@ import org.apache.lucene.analysis.icu.ICUNormalizer2CharFilterFactory
 import org.apache.lucene.analysis.ja.dict.UserDictionary
 import org.apache.lucene.analysis.ja.{JapanesePartOfSpeechStopFilterFactory, JapaneseReadingFormFilterFactory, JapaneseTokenizerFactory}
 import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory
+import org.apache.lucene.analysis.ngram.EdgeNGramFilterFactory
 import org.apache.lucene.analysis.shingle.ShingleFilterFactory
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute
 
@@ -101,10 +102,19 @@ object IndexAnalyzer extends App {
   // ex) とうきょう -> tokyo
   customAnalyzerBuilder.addTokenFilter(ASCIIFoldingFilterFactory.NAME)
 
+
+  // edge ngram filterを使ってtoken分割している
+  // prefix searchはパフォーマンスが悪いので、edge ngramで分割して検索する
+  val edgeEgramArgs: util.HashMap[String, String] = new util.HashMap[String, String]()
+  edgeEgramArgs.put("minGramSize", "1")
+  edgeEgramArgs.put("maxGramSize", "100")
+  customAnalyzerBuilder.addTokenFilter(classOf[EdgeNGramFilterFactory], edgeEgramArgs)
+
+
   val customAnalyzer: CustomAnalyzer = customAnalyzerBuilder.build()
 
   // requestLogからのinput
-  val inputKeyword = "スキー"
+  val inputKeyword = "エンジニア"
   val tokenStream: TokenStream = customAnalyzer.tokenStream("", inputKeyword)
   tokenStream.reset()
   while (tokenStream.incrementToken()) {
