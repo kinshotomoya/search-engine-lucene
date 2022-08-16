@@ -1,11 +1,37 @@
-import org.apache.lucene.document.{Document, Field, StringField}
+import org.apache.lucene.analysis.ja.JapaneseCompletionFilter
+import org.apache.lucene.document.{Document, Field, TextField}
 import org.apache.lucene.index.{IndexWriter, IndexWriterConfig}
 import org.apache.lucene.store.MMapDirectory
 
 import java.nio.file.Paths
 import scala.io.BufferedSource
 
-object IndexFromFile extends App {
+object JapaneseCompletionFile extends App {
+  // 便利すぎる。。。
+  val indexAnalyzer = new org.apache.lucene.analysis.ja.JapaneseCompletionAnalyzer(null, JapaneseCompletionFilter.Mode.INDEX)
+  // INDEX
+  // input = 反sy
+  // ↓のようにtokenizerで分解されてそれぞれで出力（romanize）する
+  //  反
+  //  han
+  //  hann
+  //  sy
+
+  // QUERY
+  // input = 反sy
+  // ↓のようにtokenizerされた文字列を結合して出力（romanize）する
+  // searchの時にこのモードで使う
+  //  反sy
+  //  hansy
+  //  hannsy
+
+
+  //  val tokenStream = a.tokenStream("", "普通免許")
+  //  tokenStream.reset()
+  //  while (tokenStream.incrementToken()) {
+  //    val attr = tokenStream.getAttribute(classOf[CharTermAttribute])
+  //    println(attr.toString)
+  //  }
 
 
   // NOTE:
@@ -22,11 +48,11 @@ object IndexFromFile extends App {
   val locationIndex: MMapDirectory = new MMapDirectory(locationIndexFilePath)
 
 
-//  val analyzer = IndexAnalyzer.customAnalyzer
-//  println(analyzer)
+  //  val analyzer = IndexAnalyzer.customAnalyzer
+  //  println(analyzer)
 
   // データ作成時点でtokenizeなど済ましているので、特にanalyzerは設定しない
-  val writerConfig: IndexWriterConfig = new IndexWriterConfig()
+  val writerConfig: IndexWriterConfig = new IndexWriterConfig(indexAnalyzer)
   val writer: IndexWriter = new IndexWriter(keywordIndex, writerConfig)
 
 
@@ -34,10 +60,10 @@ object IndexFromFile extends App {
   //  bulkで入れることはできる？
   val file: BufferedSource = scala.io.Source.fromInputStream(getClass.getClassLoader.getResourceAsStream("suggestion-keywords.csv"))
   file.getLines().foreach((line: String) => {
-    val list = line.split(",")
-    val text = list(0)
-    val reading = list(1)
-    addDoc(writer, text, reading)
+//    val list = line.split(",")
+//    val text = list(0)
+//    val reading = list(1)
+    addDoc(writer, line)
   })
 
   file.close()
@@ -48,18 +74,16 @@ object IndexFromFile extends App {
   // ユーザーからのクエリ処理流れ
   // 1. 入力クエリをtokenizeする
   // 2. tokenFilterで
-//  val analyzer = CustomAnalyzer.builder().build()
+  //  val analyzer = CustomAnalyzer.builder().build()
 
-//  val parser = new QueryParser("reading", )
+  //  val parser = new QueryParser("reading", )
 
 
-  private def addDoc(writer: IndexWriter, text: String, reading: String): Unit = {
+  private def addDoc(writer: IndexWriter, text: String): Unit = {
     val document = new Document()
-    // suggest機能を作成するときは、データ作成時点でtokenizeしているので
-    // index時にはtokenizeする必要はない
-    document.add(new StringField("text", text, Field.Store.YES))
+    document.add(new TextField("text", text, Field.Store.YES))
     // StringFieldはindex時にtokenizeされない
-    document.add(new StringField("reading", reading, Field.Store.YES))
+//    document.add(new StringField("reading", reading, Field.Store.YES))
 
     // NOTE:
     // multi fieldがデフォルトでonになっているので、複数の値を同じフィールドに格納したい場合は
@@ -68,4 +92,6 @@ object IndexFromFile extends App {
 
     writer.addDocument(document)
   }
+
+
 }

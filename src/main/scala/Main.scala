@@ -1,4 +1,4 @@
-import org.apache.lucene.analysis.ja.JapaneseAnalyzer
+import org.apache.lucene.analysis.ja.JapaneseCompletionAnalyzer
 import org.apache.lucene.document.{Document, Field, StringField, TextField}
 import org.apache.lucene.index.{DirectoryReader, IndexWriter, IndexWriterConfig}
 import org.apache.lucene.queryparser.classic.QueryParser
@@ -18,7 +18,7 @@ object Main extends App {
     //  カスタムFilter入れる（不要ワードを取り除くなど）
     //  カスタム辞書周りはどう追加する？（synonym,ngword,stopword等）
 
-    val analyzer = new JapaneseAnalyzer()
+    val analyzer = new JapaneseCompletionAnalyzer()
 
 //    val analyzer = new StandardAnalyzer
 
@@ -31,10 +31,10 @@ object Main extends App {
     val writer = new IndexWriter(index, config)
 
     // ドキュメントをindexに追加していく
-    addDoc(writer, "Lucene in Action", "193398817")
-    addDoc(writer, "Lucene for Dummies", "55320055Z")
-    addDoc(writer, "Managing Gigabytes", "55063554A")
-    addDoc(writer, "The Art of Computer Science", "9900333X")
+    addDoc(writer, "エンジニア", "193398817")
+    addDoc(writer, "看護師", "55320055Z")
+    addDoc(writer, "普通免許", "55063554A")
+    addDoc(writer, "スキー合宿", "9900333X")
 
     // TODO: どのようにindexが構成されているかみる（tokenizerで文字がどのように分割されているのか・データ構造）
     // => lukeを使えばGUI上でindex内容が見れるっぽい
