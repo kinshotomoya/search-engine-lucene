@@ -1,9 +1,8 @@
 import org.apache.lucene.analysis.TokenStream
-import org.apache.lucene.analysis.core.StopFilterFactory
 import org.apache.lucene.analysis.custom.CustomAnalyzer
 import org.apache.lucene.analysis.icu.ICUNormalizer2CharFilterFactory
 import org.apache.lucene.analysis.ja.dict.UserDictionary
-import org.apache.lucene.analysis.ja.{JapaneseCompletionAnalyzer, JapanesePartOfSpeechStopFilterFactory, JapaneseTokenizerFactory}
+import org.apache.lucene.analysis.ja.{JapaneseCompletionAnalyzer, JapaneseTokenizerFactory}
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute
 
 import java.io.InputStreamReader
@@ -48,21 +47,22 @@ object JapaneseCompletion extends App {
 
   // partOFSpeechStopFilterの設定
   // stoptags.txtに指定している
-  val partOfSpeechStopMap = new util.HashMap[String, String]()
-  partOfSpeechStopMap.put("tags", "stoptags.txt")
-  customAnalyzerBuilder.addTokenFilter(classOf[JapanesePartOfSpeechStopFilterFactory], partOfSpeechStopMap)
+//  val partOfSpeechStopMap = new util.HashMap[String, String]()
+//  partOfSpeechStopMap.put("tags", "stoptags.txt")
+//  customAnalyzerBuilder.addTokenFilter(classOf[JapanesePartOfSpeechStopFilterFactory], partOfSpeechStopMap)
 
+  // stop tagを設定しているので↓いらん
   // stopFilterの設定
   // 削除するワードを指定
-  val stopFilterMap = new util.HashMap[String, String]()
-  stopFilterMap.put("words", "stopwords.txt")
-  customAnalyzerBuilder.addTokenFilter(classOf[StopFilterFactory], stopFilterMap)
+//  val stopFilterMap = new util.HashMap[String, String]()
+//  stopFilterMap.put("words", "stopwords.txt")
+//  customAnalyzerBuilder.addTokenFilter(classOf[StopFilterFactory], stopFilterMap)
 
   val customAnalyzer: CustomAnalyzer = customAnalyzerBuilder.build()
 
   // requestLogからのinput
   val tokenList = scala.collection.mutable.ListBuffer.empty[String]
-  val inputKeyword = "免許合宿スキー"
+  val inputKeyword = "日本の正社員"
   val tokenStream: TokenStream = customAnalyzer.tokenStream("", inputKeyword)
   tokenStream.reset()
   while (tokenStream.incrementToken()) {
@@ -71,6 +71,8 @@ object JapaneseCompletion extends App {
   }
 
   // ↓tokenizerによって、単語分解されたものにromaji読みをつけて結合している
+  // ここもカスタムのJapaneseCompletionAnalyzerを作成する必要がある
+  // 何故なら、「日本のせi」で「i」が消されてしまうデフォルトだと
   val listList = scala.collection.mutable.ListBuffer.empty[List[String]]
   val japaneseCompletionAnalyzer = new JapaneseCompletionAnalyzer()
   tokenList.foreach(t => {

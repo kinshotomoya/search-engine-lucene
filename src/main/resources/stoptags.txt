@@ -339,7 +339,7 @@
 #
 #  particle-adnominalizer: The "no" that attaches to nouns and modifies
 #  non-inflectional words.
-助詞-連体化
+# 助詞-連体化
 #
 #  particle-adnominalizer: The "ni" and "to" that appear following nouns and adverbs
 #  that are giongo, giseigo, or gitaigo.

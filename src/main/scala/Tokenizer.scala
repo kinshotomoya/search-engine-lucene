@@ -15,7 +15,7 @@ object Tokenizer extends App {
   val jaTokenizer: JapaneseTokenizer = new JapaneseTokenizer(userDictionary, true, Mode.NORMAL)
 
   // 解析文字列をtokenizerにset
-  val text = "看護師"
+  val text = "看護師のせi"
   val reader = new StringReader(text)
   jaTokenizer.setReader(reader)
   jaTokenizer.reset()
