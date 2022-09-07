@@ -17,7 +17,7 @@ object IndexAnalyzer extends App {
   val customAnalyzer: CustomAnalyzer = customAnalyzerBuilder.build()
 
   // requestLogからのinput
-  val inputKeyword = "エンジニア　正社員　新着"
+  val inputKeyword = "東京タワー　エンジニア"
   val tokenStream: TokenStream = customAnalyzer.tokenStream("", inputKeyword)
   tokenStream.reset()
   while (tokenStream.incrementToken()) {

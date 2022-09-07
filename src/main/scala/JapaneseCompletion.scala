@@ -62,7 +62,7 @@ object JapaneseCompletion extends App {
 
   // requestLogからのinput
   val tokenList = scala.collection.mutable.ListBuffer.empty[String]
-  val inputKeyword = "日本の正社員"
+  val inputKeyword = "看護師"
   val tokenStream: TokenStream = customAnalyzer.tokenStream("", inputKeyword)
   tokenStream.reset()
   while (tokenStream.incrementToken()) {
@@ -114,14 +114,5 @@ object JapaneseCompletion extends App {
       case head :: tail => loop(head, tail)
     }
   }
-
-
-//  val tokenStream = a.tokenStream("", "普通免許")
-//  tokenStream.reset()
-//  while (tokenStream.incrementToken()) {
-//    val attr = tokenStream.getAttribute(classOf[CharTermAttribute])
-//    println(attr.toString)
-//  }
-
 
 }
