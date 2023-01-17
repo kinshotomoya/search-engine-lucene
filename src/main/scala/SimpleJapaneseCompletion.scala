@@ -16,11 +16,11 @@ object SimpleJapaneseCompletion extends App {
 
   // tokenizer設定
   val tokenizerArgs: util.HashMap[String, String] = new util.HashMap[String, String]()
-  customAnalyzerBuilder.withTokenizer(classOf[WhitespaceTokenizerFactory], tokenizerArgs)
+  customAnalyzerBuilder.withTokenizer(classOf[JapaneseTokenizerFactory], tokenizerArgs)
 
   // charFilterの設定
   // 半角仮名を全角仮名変換などノーマライズしている
-  customAnalyzerBuilder.addCharFilter(ICUNormalizer2CharFilterFactory.NAME)
+//  customAnalyzerBuilder.addCharFilter(ICUNormalizer2CharFilterFactory.NAME)
 
   val japaneseCompletionFilterArgs: util.HashMap[String, String] = new util.HashMap[String, String]()
   customAnalyzerBuilder.addTokenFilter(classOf[JapaneseCompletionFilterFactory], japaneseCompletionFilterArgs)
@@ -28,11 +28,12 @@ object SimpleJapaneseCompletion extends App {
   val customAnalyzer: CustomAnalyzer = customAnalyzerBuilder.build()
 
   // requestLogからのinput
-  val inputKeyword = "普通免許"
+  // :を入力すると前の文字を含んで読みを返してしまうのは、JapaneseCompletionFilterのバグではなさそう
+  val inputKeyword = ";a"
   val tokenStream: TokenStream = customAnalyzer.tokenStream("", inputKeyword)
   tokenStream.reset()
   while (tokenStream.incrementToken()) {
-    val attr = tokenStream.getAttribute(classOf[ReadingAttribute])
-    println(attr.getReading)
+    val readingAttribute = tokenStream.getAttribute(classOf[CharTermAttribute])
+    println(readingAttribute.toString)
   }
 }
